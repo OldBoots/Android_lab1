@@ -69,8 +69,8 @@ QString MainWindow::сalculation(QStringList express){ // (-) - 0, + - 1,  / - 2
     bool av[4];
     while (express.size() > 1){
         qDebug() << express;
-        for(int i = 1; i < express.size(); i += 2){
-            av[i] = false;
+        av[0] = av[1] = av[2] = av[3] = 0;
+        for(int i = 0; i < express.size(); i++){
             if(express[i] == "*"){
                 av[0] = true;
             } else if(express[i] == "/"){
@@ -82,9 +82,10 @@ QString MainWindow::сalculation(QStringList express){ // (-) - 0, + - 1,  / - 2
             }
         }
         bool flag;
+        qDebug() << "(" << av[0] << ", " << av[1] << ", " << av[2] << ", " << av[3] << ")";
         for(int i = 0; i < express.size() - 2; i++){
             flag = false;
-            qDebug() << "1 - " << dop_list << Qt::endl << "(" << av[0] << ", " << av[1] << ", " << av[2] << ", " << av[3] << ")";
+            qDebug() << "1 - " << dop_list;
             //if(express[i + 1] != "*"){}
             qDebug() << express[i + 1] << " " << av[0];
             if(express[i + 1] == "*" && av[0]){
