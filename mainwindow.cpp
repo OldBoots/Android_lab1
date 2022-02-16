@@ -31,7 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this, SIGNAL(changing_line()), this, SLOT(butt_clicked()));
 
-
+    express.resize(3);
+    index = 0;
 }
 
 void MainWindow::butt_0_clicked(){ ans_feild += check_input("0"); emit changing_line(); }
@@ -53,81 +54,118 @@ void MainWindow::butt_div_clicked(){ ans_feild += check_input("/"); emit changin
 void MainWindow::butt_com_clicked(){ans_feild += check_input(","); emit changing_line();}
 
 void MainWindow::butt_del_clicked(){
-    if(!ans_feild.isEmpty()){
-        if(ans_feild.back() == ' '){
-            ans_feild.chop(3);
+    if(index == 2){
+        if (!express[2].isEmpty()){            // Second num
+            express[2].chop(1);
+            ans_feild.chop(1);
         } else {
+            express[1] = "";
+            ans_feild.chop(3);
+            index = 0;
+        }
+    }
+    if(index == 0){
+        if (!express[0].isEmpty()){
+            express[0].chop(1);
             ans_feild.chop(1);
         }
-        emit changing_line();
     }
-}
-
-void MainWindow::butt_sm_clicked(){
-    ans_feild.replace(',', '.');
-//    ans_feild = сalculation(ans_feild.split(" "));
     emit changing_line();
 }
 
-bool MainWindow::check_simbol(QString str){
-    bool flg = 0;
-    for(int i = 0; i < simbol.size(); i++){
-        if(use_simbol[i] == '1' && str == simbol[i]){
-            flg = true;
+void MainWindow::сalculation(){
+    double ans;
+    if(express[1] == "*"){
+        ans = express[0].toDouble() * express[2].toDouble();
+    } else if(express[1] == "/"){
+        ans = express[0].toDouble() / express[2].toDouble();
+    } else if(express[1] == "+"){
+        ans = express[0].toDouble() + express[2].toDouble();
+    } else {
+        ans = express[0].toDouble() - express[2].toDouble();
+    }
+    express[0] = ans_feild = QString::number(ans);
+    express[1].clear();
+    express[2].clear();
+    index = 0;
+}
+
+void MainWindow::butt_sm_clicked(){
+    if(check_num(express[0]) && !express[0].isEmpty() && check_num(express[2])){
+        if(express[1] == "/" && express[2].toDouble() == 0){
+            qDebug("Error: Division on null!");
+            return;
+        } else {
+           сalculation();
         }
     }
-    use_simbol = "000000000000000";
-    return flg;
+    emit changing_line();
+}
+
+bool MainWindow::check_simbol(QString str, QString use_simbol){
+    return use_simbol.contains(str);
 }
 
 void MainWindow::butt_clicked(){ ui->answer_line->setText(ans_feild); }
 
 bool MainWindow::check_ins_null(){
-    bool flg = false;
-    use_simbol = "011111111100001";
-    for(int i = ans_feild.size() - 2; i >= 0; i--){
-        if(check_simbol(ans_feild[i])){
-            flg = true;
+    for(int i = express[index].size() - 2; i >= 0; i++){
+        if(check_simbol(express[index][i], "123456789.")){
+            return true;
         }
     }
-    return flg;
+    return false;
+}
+
+bool MainWindow::check_num(QString str){
+    for(int i = 0; i < str.size(); i++){
+        if(check_simbol(str[i], "0123456789")){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MainWindow::check_express(){
+    if(index == 2){
+        return false;
+    }
+    return check_num(express[index]);
+}
+
+bool MainWindow::check_size(){
+    if(express[index].size() <= 10){
+        return true;
+    }
+    return false;
 }
 
 QString MainWindow::check_input(QString str){
-    if(ans_feild.isEmpty()){
-        use_simbol = "111111111100010";
-        if(check_simbol(str)){
+    if(express[index].isEmpty()) {                                                                  // First simbol
+        if (check_simbol(str, "0123456789-")){
+            express[index] += str;
             return str;
         }
-    } else if(ans_feild.size() == 1){
-        if (ans_feild[0] == '-' ){
-            use_simbol = "111111111100000";
-            if(check_simbol(str)){
-                return str;
-            }
-        } else {
-            if(str == "0" && ans_feild[ans_feild.size() - 1] == '0'){
-                if(check_ins_null()){
-                    return str;
-                }
-            } else {
-                use_simbol = "111111111100000";
-                if(check_simbol(str)){
-                    return str;
-                }
-            }
+    }
+    if(str == "," && !express[index].contains(".") && check_size()){                                                // Check .
+        express[index] += ".";
+        return str;
+    }
+    if(str == "0" && express[index][express[index].size() - 1] == '0' && check_size()){                             // Check 0
+        if(check_ins_null()){
+            express[index] += str;
+            return str;
         }
-    } else {
-        if(str == "0" && ans_feild[ans_feild.size() - 1] == '0'){
-            if(check_ins_null()){
-                return str;
-            }
-        } else {
-            use_simbol = "111111111100000";
-            if(check_simbol(str)){
-                return str;
-            }
-        }
+
+    }
+    if(((str == "-" && express[index].contains("-")) || check_simbol(str, "*/+")) && check_express() && check_size()){   // Input */+-
+        index = 2;
+        express[1] += str;
+        return " " + str + " ";
+    }
+    if(check_simbol(str, "0123456789") && check_size()){
+        express[index] += str;
+        return str;
     }
     return "";
 }

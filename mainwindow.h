@@ -45,12 +45,17 @@ signals:
 void changing_line();
 
 private:
-//QString сalculation(QStringList express);
+void сalculation();
 QString check_input(QString str);
-bool check_simbol(QString use_simbol);
+bool check_simbol(QString str, QString use_simbol);
 bool check_ins_null();
+bool check_express();
+bool check_size();
+bool check_num(QString str);
 
 private:
+    int index;
+    QStringList express;
     QString ans_feild;
     QString simbol = "0123456789*/+-.";
     QString use_simbol;
