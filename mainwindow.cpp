@@ -34,23 +34,23 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
-void MainWindow::butt_0_clicked(){ ans_feild += "0"; emit changing_line(); }
-void MainWindow::butt_1_clicked(){ ans_feild += "1"; emit changing_line(); }
-void MainWindow::butt_2_clicked(){ ans_feild += "2"; emit changing_line(); }
-void MainWindow::butt_3_clicked(){ ans_feild += "3"; emit changing_line(); }
-void MainWindow::butt_4_clicked(){ ans_feild += "4"; emit changing_line(); }
-void MainWindow::butt_5_clicked(){ ans_feild += "5"; emit changing_line(); }
-void MainWindow::butt_6_clicked(){ ans_feild += "6"; emit changing_line(); }
-void MainWindow::butt_7_clicked(){ ans_feild += "7"; emit changing_line(); }
-void MainWindow::butt_8_clicked(){ ans_feild += "8"; emit changing_line(); }
-void MainWindow::butt_9_clicked(){ ans_feild += "9"; emit changing_line(); }
+void MainWindow::butt_0_clicked(){ ans_feild += check_input("0"); emit changing_line(); }
+void MainWindow::butt_1_clicked(){ ans_feild += check_input("1"); emit changing_line(); }
+void MainWindow::butt_2_clicked(){ ans_feild += check_input("2"); emit changing_line(); }
+void MainWindow::butt_3_clicked(){ ans_feild += check_input("3"); emit changing_line(); }
+void MainWindow::butt_4_clicked(){ ans_feild += check_input("4"); emit changing_line(); }
+void MainWindow::butt_5_clicked(){ ans_feild += check_input("5"); emit changing_line(); }
+void MainWindow::butt_6_clicked(){ ans_feild += check_input("6"); emit changing_line(); }
+void MainWindow::butt_7_clicked(){ ans_feild += check_input("7"); emit changing_line(); }
+void MainWindow::butt_8_clicked(){ ans_feild += check_input("8"); emit changing_line(); }
+void MainWindow::butt_9_clicked(){ ans_feild += check_input("9"); emit changing_line(); }
 
-void MainWindow::butt_min_clicked(){ ans_feild += " - "; emit changing_line(); }
-void MainWindow::butt_plus_clicked(){ ans_feild += " + "; emit changing_line(); }
-void MainWindow::butt_mult_clicked(){ ans_feild += " * "; emit changing_line(); }
-void MainWindow::butt_div_clicked(){ ans_feild += " / "; emit changing_line(); }
+void MainWindow::butt_min_clicked(){ ans_feild += check_input("-"); emit changing_line(); }
+void MainWindow::butt_plus_clicked(){ ans_feild += check_input("+"); emit changing_line(); }
+void MainWindow::butt_mult_clicked(){ ans_feild += check_input("*"); emit changing_line(); }
+void MainWindow::butt_div_clicked(){ ans_feild += check_input("/"); emit changing_line(); }
 
-void MainWindow::butt_com_clicked(){ans_feild += ","; emit changing_line();}
+void MainWindow::butt_com_clicked(){ans_feild += check_input(","); emit changing_line();}
 
 void MainWindow::butt_del_clicked(){
     if(!ans_feild.isEmpty()){
@@ -63,77 +63,74 @@ void MainWindow::butt_del_clicked(){
     }
 }
 
-QString MainWindow::сalculation(QStringList express){ // (-) - 0, + - 1,  / - 2, * - 3
-    QStringList dop_list;
-    double num;
-    bool av[4];
-    while (express.size() > 1){
-        qDebug() << express;
-        av[0] = av[1] = av[2] = av[3] = 0;
-        for(int i = 0; i < express.size(); i++){
-            if(express[i] == "*"){
-                av[0] = true;
-            } else if(express[i] == "/"){
-                av[1] = true;
-            } else if(express[i] == "+"){
-                av[2] = true;
-            } else if(express[i] == "-"){
-                av[3] = true;
-            }
-        }
-        bool flag;
-        qDebug() << "(" << av[0] << ", " << av[1] << ", " << av[2] << ", " << av[3] << ")";
-        for(int i = 0; i < express.size() - 2; i++){
-            flag = false;
-            qDebug() << "1 - " << dop_list;
-            //if(express[i + 1] != "*"){}
-            qDebug() << express[i + 1] << " " << av[0];
-            if(express[i + 1] == "*" && av[0]){
-                qDebug("Z");
-                num = express[i].toDouble() * express[i + 2].toDouble();
-                dop_list << QString::number(num);
-                i += 2;
-                flag = true;
-            } else if(express[i + 1] == "/" && av[1] && !av[0]){
-                if(express[i + 2].toDouble() == 0){ qDebug("Error: Division by zero!");}
-                num = express[i].toDouble() / express[i + 2].toDouble();
-                dop_list << QString::number(num);
-                i += 2;
-                flag = true;
-            } else if(express[i + 1] == "+" && av[2] && !av[1] && !av[0]){
-                qDebug("Z");
-                num = express[i].toDouble() + express[i + 2].toDouble();
-                dop_list << QString::number(num);
-                i += 2;
-                flag = true;
-            } else if(express[i + 1] == "-" && av[3] && !av[2] && !av[1] && !av[0]){
-                num = express[i].toDouble() - express[i + 2].toDouble();
-                dop_list << QString::number(num);
-                i += 2;
-                flag = true;
-            } else {
-                dop_list << express[i];
-            }
-            qDebug() << "2 - " << dop_list;
-            if(flag){
-                express = dop_list;
-                dop_list.clear();
-            }
-//            express = dop_list;
-//            dop_list.clear();
-        }
-    }
-    return express[0];
-}
-
 void MainWindow::butt_sm_clicked(){
     ans_feild.replace(',', '.');
-    ans_feild = сalculation(ans_feild.split(" "));
+//    ans_feild = сalculation(ans_feild.split(" "));
     emit changing_line();
+}
+
+bool MainWindow::check_simbol(QString str){
+    bool flg = 0;
+    for(int i = 0; i < simbol.size(); i++){
+        if(use_simbol[i] == '1' && str == simbol[i]){
+            flg = true;
+        }
+    }
+    use_simbol = "000000000000000";
+    return flg;
 }
 
 void MainWindow::butt_clicked(){ ui->answer_line->setText(ans_feild); }
 
+bool MainWindow::check_ins_null(){
+    bool flg = false;
+    use_simbol = "011111111100001";
+    for(int i = ans_feild.size() - 2; i >= 0; i--){
+        if(check_simbol(ans_feild[i])){
+            flg = true;
+        }
+    }
+    return flg;
+}
+
+QString MainWindow::check_input(QString str){
+    if(ans_feild.isEmpty()){
+        use_simbol = "111111111100010";
+        if(check_simbol(str)){
+            return str;
+        }
+    } else if(ans_feild.size() == 1){
+        if (ans_feild[0] == '-' ){
+            use_simbol = "111111111100000";
+            if(check_simbol(str)){
+                return str;
+            }
+        } else {
+            if(str == "0" && ans_feild[ans_feild.size() - 1] == '0'){
+                if(check_ins_null()){
+                    return str;
+                }
+            } else {
+                use_simbol = "111111111100000";
+                if(check_simbol(str)){
+                    return str;
+                }
+            }
+        }
+    } else {
+        if(str == "0" && ans_feild[ans_feild.size() - 1] == '0'){
+            if(check_ins_null()){
+                return str;
+            }
+        } else {
+            use_simbol = "111111111100000";
+            if(check_simbol(str)){
+                return str;
+            }
+        }
+    }
+    return "";
+}
 
 MainWindow::~MainWindow()
 {

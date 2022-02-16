@@ -45,10 +45,15 @@ signals:
 void changing_line();
 
 private:
-QString сalculation(QStringList express);
+//QString сalculation(QStringList express);
+QString check_input(QString str);
+bool check_simbol(QString use_simbol);
+bool check_ins_null();
 
 private:
     QString ans_feild;
+    QString simbol = "0123456789*/+-.";
+    QString use_simbol;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
