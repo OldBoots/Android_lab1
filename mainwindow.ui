@@ -305,9 +305,7 @@
            </sizepolicy>
           </property>
           <property name="font">
-           <font>
-            <family>Cascadia Code SemiBold</family>
-           </font>
+           <font/>
           </property>
           <property name="text">
            <string>-</string>
