@@ -26,6 +26,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->butt_com, SIGNAL(clicked()), this, SLOT(butt_com_clicked()));
 
     connect(ui->butt_del, SIGNAL(clicked()), this, SLOT(butt_del_clicked()));
+    connect(ui->butt_del, SIGNAL(pressed()), this, SLOT(start_time()));
+    connect(ui->butt_del, SIGNAL(released()), this, SLOT(stop_time()));
+    timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), this, SLOT(end_time()));
 
     connect(ui->butt_sm, SIGNAL(clicked()), this, SLOT(butt_sm_clicked()));
 
@@ -35,6 +39,21 @@ MainWindow::MainWindow(QWidget *parent)
     index = 0;
 }
 
+void MainWindow::start_time(){
+    timer->start(1000);
+}
+void MainWindow::stop_time(){
+    timer->stop();
+}
+void MainWindow::end_time(){
+    timer->stop();
+        express[0].clear();
+        express[1].clear();
+        express[2].clear();
+        ans_feild.clear();
+        index = 0;
+        emit changing_line();
+}
 void MainWindow::butt_0_clicked(){ ans_feild += check_input("0"); emit changing_line(); }
 void MainWindow::butt_1_clicked(){ ans_feild += check_input("1"); emit changing_line(); }
 void MainWindow::butt_2_clicked(){ ans_feild += check_input("2"); emit changing_line(); }

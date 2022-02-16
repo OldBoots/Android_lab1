@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -41,6 +42,9 @@ private slots:
     void butt_del_clicked();
     void butt_com_clicked();
     void butt_sm_clicked();
+    void start_time();
+    void stop_time();
+    void end_time();
 
 signals:
 void changing_line();
@@ -57,6 +61,7 @@ bool check_num(QString str);
 
 private:
     int index;
+    QTimer *timer;
     QStringList express;
     QString ans_feild;
     QString simbol = "0123456789*/+-.";
